@@ -50,7 +50,7 @@ fun CameraShutterManager() {
         Spacer(modifier = Modifier.width(10.dp))
 
         Switch(
-            checked = enabled,
+            checked = !enabled,
             onCheckedChange = {
                 context.setEnabled(it)
 
