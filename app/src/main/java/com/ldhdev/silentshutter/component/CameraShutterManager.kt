@@ -22,16 +22,16 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.ldhdev.silentshutter.CAMERA_SHUTTER_SETTINGS_NAME
 
-private fun Context.isEnabled(): Boolean {
+private fun Context.isSilent(): Boolean {
     return try {
-        Settings.System.getInt(contentResolver, CAMERA_SHUTTER_SETTINGS_NAME) == 1
+        Settings.System.getInt(contentResolver, CAMERA_SHUTTER_SETTINGS_NAME) == 0
     } catch (e: SettingNotFoundException) {
         false
     }
 }
 
-private fun Context.setEnabled(enabled: Boolean) {
-    Settings.System.putInt(contentResolver, CAMERA_SHUTTER_SETTINGS_NAME, if (enabled) 1 else 0)
+private fun Context.setSilent(silent: Boolean) {
+    Settings.System.putInt(contentResolver, CAMERA_SHUTTER_SETTINGS_NAME, if (silent) 0 else 1)
 }
 
 @Composable
@@ -39,7 +39,7 @@ fun CameraShutterManager() {
 
     val context = LocalContext.current
 
-    var enabled by remember { mutableStateOf(context.isEnabled()) }
+    var silent by remember { mutableStateOf(context.isSilent()) }
 
     Row(
         verticalAlignment = Alignment.CenterVertically,
@@ -50,11 +50,11 @@ fun CameraShutterManager() {
         Spacer(modifier = Modifier.width(10.dp))
 
         Switch(
-            checked = !enabled,
+            checked = silent,
             onCheckedChange = {
-                context.setEnabled(it)
+                context.setSilent(it)
 
-                enabled = context.isEnabled()
+                silent = context.isSilent()
             },
         )
     }
